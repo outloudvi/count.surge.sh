@@ -1,53 +1,99 @@
-<html><head>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8"></head><body><div id="upbtn">
-  <button id="tsrg">Test Stroage</button> | <button id="save">Save</button> | <button id="read">Read</button>
-</div>
-<hr>
-<div id="write">
-  <div id="inputnum">
-    COUNT FROM 1 TO ... <input id="num" type="text"> <button id="num-conf">Confirm!</button>
-  </div>
-  <div id="datain">
-    Input here: <input id="input" type="text">
-		<br>
-		<button id="add-num">Add</button>
-		<br>
-		<button id="download">Download .csv file</button>
-		<div id="csv"></div>
-  </div>
-  <div id="datashow">
-  </div>
-</div>
-    	<style>#datain{
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title> COUNT.surge.sh English </title>
+</head>
+
+<!-- CSS Style -->
+<style>
+
+#inputDiv {
   width: 75%;
   float: left;
   display: none
 }
 
-#datashow{
+#showDiv {
   width: 25%;
   float: right;
   display: none
-}</style>
-	    		<script>x = undefined
-xlen = 0
-
-function e(id) {
-  return document.getElementById(id)
 }
 
-function testStroage() {
-  if ( window.LocalStroage )
-    return true
-  else
-    return false
+.yl {
+  background: yellow;
 }
 
-function tsr(){
-  if ( testStroage() == false )
-    alert("LocalStroage is not supported :(");
-  else
-    alert("LocalStroage is supported. Yay!");
+</style>
+
+<!-- Document -->
+<body>
+
+<div id="upbtn">
+  <button id="tsrgBtn">Test Stroage</button> | <button id="saveBtn" disabled>Save to browser</button> | <button id="readBtn" disabled>Read from browser</button> | <a href="zh-cn.html">中文</a>
+</div>
+<br />
+<div id="write">
+  <div id="cntDiv">
+    COUNT FROM 1 TO ... <input id="cntTxt" type="text"> <button id="numconfBtn">Confirm!</button>
+  </div>
+  <div id="inputDiv">
+    Input here: <input id="numTxt" type="text">
+		<br />
+		<button id="addBtn">Add (Enter)</button>
+		<button id="dlBtn">Download .csv file</button>
+		<div id="getcsvDiv"></div>
+    <br />
+    <div id="tip">
+    <b> What can I input? </b><br />
+    <span> We support these format below: </span>
+    <ul>
+      <li>A number (eg. 5)</li>
+      <li>Area (eg. 5-12)</li>
+      <li>A number below 0, meaning cut one down (eg. -2 means cut 2 down 1)</li>
+      <li><code>!</code>, means reverting last change</li>
+    </ul>
+    <br />
+    <span>Made by Outloudvi with ❤ | <a href="https://github.com/outloudvi/count.surge.sh">GitHub</a></span>
+    </div>
+  </div>
+  <div id="showDiv">
+  </div>
+</div>
+
+<!-- And here goes the JavaScript! -->
+<script>
+x = undefined;
+xlen = 0;
+fcus = false;
+xc = Array();
+
+function e(eid) {
+  return document.getElementById(eid);
+}
+
+function testStorage(){
+  if ( window.localStorage === false )
+    e('tsrgBtn').innerHTML = "LocalStorage is not supported :(" ;
+  else {
+    e('tsrgBtn').innerHTML = "LocalStorage is supported. Yay!" ;
+    e('tsrgBtn').disabled = true;
+    e('saveBtn').disabled = false;
+    e('readBtn').disabled = false;
+  }
+}
+
+function saveData(){
+  window.localStorage.setItem( "count", JSON.stringify(x) );
+  e('saveBtn').innerHTML = "Saved";
+}
+
+function readData(){
+  readed = window.localStorage.getItem( "count" );
+  readed = JSON.parse(readed);
+  x = readed;
+  refreshLR();
+  e('readBtn').innerHTML = "Readed";
 }
 
 function initList(num){
@@ -60,45 +106,148 @@ function initList(num){
 }
 
 function refreshLR(){
-	e('num').value = ""
+	e('numTxt').value = ""
 
 	y = ""
+  if( xc.length != 0 )
 		for (i=1;i<=xlen;i++) {
-			y = y + "# " + i + " : " + x[i];
+      if ( xc.includes(i) == true )
+			  y = y + "<span class=yl># " + i + " : " + x[i] + "</span>";
+      else
+        y = y + "# " + i + " : " + x[i];
 		  y = y + "<br />";
 		}
-	e('datashow').innerHTML = y;
+  else
+    for (i=1;i<=xlen;i++) {
+        y = y + "# " + i + " : " + x[i];
+		    y = y + "<br />";
+		}
+	e('showDiv').innerHTML = y;
+}
+
+function min(a,b){
+  if (a<=b) return a;
+  return b;
+}
+
+function max(a,b){
+  if (a>=b) return a;
+  return b;
+}
+
+function inc(num,flag=true){
+  if (flag) {
+    x[num] = x[num] + 1;
+    xc.push(num);
+  } else {
+    x[num] = x[num] - 1;
+    xc.push(num);
+  }
+}
+
+function rollback(){
+  for( i in xc)
+    inc(i,false);
+}
+
+function proc(str){
+  if ( /^[0-9]+$/.test(str) ){ // Only a num
+    str = Number(str);
+    inc(str);
+    return;
+  }
+  if ( /^[0-9]+-[0-9]+/.test(str) ) {  // A - B
+    str = str.split('-');
+    str[0] = Number(str[0]);
+    str[1] = Number(str[1]);
+    xfrom = min( str[0], str[1] );
+    xto = max( str[0], str[1] );
+    for (i=xfrom;i<=xto;i++)
+      inc(i);
+    return;
+  }
+  if ( /^-[0-9]+/.test(str) ) {
+    str = str.slice(1);
+    str = Number(str);
+    if( str<=0 ) return;
+      inc(str,false);
+    return;
+  }
 }
 
 function addNum(){
-	num = e('input').value;
-	num = Number(num);
-	x[num] = x[num] + 1;
+	num = e('numTxt').value;
+  if ( /!/.test(num) ) {
+    rollback();
+    refreshLR();
+    xc = Array();
+	  e('numTxt').value = "";
+	  e('numTxt').focus();
+    return;
+  }
+  xc = Array();
+  num = num.split(',');
+  for ( i in num )
+    proc( num[i] );
 	refreshLR();
-	e('input').value = "";
-	e('input').focus();
+	e('numTxt').value = "";
+	e('numTxt').focus();
 }
+
 function getBlob(){
 	y = ""
 		for (i=1;i<=xlen;i++) {
-			y = y + i + " ," + x[i];
-		  y = y + "\r\n";
+			y = y + i + "," + x[i];
+		  y = y + "\n";
 		}
-	blob = new Blob( [y] , { type: 'text/comma-separated-values' } );
+	blob = new Blob( [y] , { type: 'text/comma-separated-values', endings:'transparent' } );
 	url =  URL.createObjectURL(blob);
-	e('csv').innerHTML = "<a download='count.csv' href=' " + url + " '>Download CSV</a>";
-}
-function numconfirmed(){
-	e('inputnum').style.display = "none";
-	initList( Number(e('num').value) );
-	e('datain').style.display = "block";
-	e('datashow').style.display = "block";
+	e('getcsvDiv').innerHTML = "<a id=getcsvA download='count.csv' href=' " + url + " '>Click here to download CSV</a>";
+  e('getcsvA').click();
+  e('getcsvDiv').innerHTML = "";
 }
 
+function cntConfirm(){
+	e('cntDiv').style.display = "none";
+	initList( Number(e('cntTxt').value) );
+	e('inputDiv').style.display = "block";
+	e('showDiv').style.display = "block";
+  refreshLR();
+  document.addEventListener("keydown", keyCheck );
+}
 
-e('tsrg').addEventListener("click", tsr);
-e('num-conf').addEventListener("click", numconfirmed);
-e('add-num').addEventListener("click", addNum);
-e('download').addEventListener("click", getBlob);</script>
+function keyCheck(event){
+  if( fcus ) return;
+  key = event.key;
+  console.log(key);
+  if ( key == 'Enter' ) {
+    e('addBtn').click();
+    return;
+  }
+  p = e('numTxt').value;
+  if ( key == "Backspace" ) {
+    e('numTxt').value = p.slice(0,p.length-1);
+    return;
+  }
+
+  if( /^[0-9\-!]+$/.test(key) )
+  {
+    e('numTxt').value = e('numTxt').value + key;
+    return;
+  }
+}
+
+e('tsrgBtn').addEventListener("click", testStorage);
+e('numconfBtn').addEventListener("click", cntConfirm);
+e('addBtn').addEventListener("click", addNum);
+e('dlBtn').addEventListener("click", getBlob);
+e('saveBtn').addEventListener("click", saveData);
+e('readBtn').addEventListener("click", readData);
+e('numTxt').addEventListener("focus", (function(){fcus = true;}) );
+e('numTxt').addEventListener("blur", (function(){fcus = false;}) );
+e('numTxt').addEventListener("keydown", (function(g){if(g.key=='Enter') e('addBtn').click();}) );
+
+</script>
 	
-<!-- Generated by RunJS (Fri Jun 23 16:32:47 CST 2017) 1ms --></body></html>
+</body>
+</html>
