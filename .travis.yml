@@ -1,0 +1,10 @@
+language: node_js
+node_js:
+  - "node"
+script:
+  - git log > log.txt
+  - date > date.txt
+deploy:
+  provider: surge
+  project: ./
+domain: count.surge.sh
