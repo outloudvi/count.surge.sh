@@ -1,67 +1,3 @@
-<!DOCTYPE HTML>
-<html>
-<head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-  <title> COUNT.surge.sh 中文版 </title>
-</head>
-
-<!-- CSS Style -->
-<style>
-
-#inputDiv {
-  width: 75%;
-  float: left;
-  display: none
-}
-
-#showDiv {
-  width: 25%;
-  float: right;
-  display: none
-}
-
-.yl {
-  background: yellow;
-}
-
-</style>
-
-<!-- Document -->
-<body>
-<div id="upbtn">
-  <button id="tsrgBtn">Test Stroage</button> | <button id="saveBtn" disabled>Save to browser</button> | <button id="readBtn" disabled>Read from browser</button> | <a href="zh-cn.html">中文</a>
-</div>
-<br />
-<div id="write">
-  <div id="cntDiv">
-    COUNT FROM 1 TO ... <input id="cntTxt" type="text"> <button id="numconfBtn">Confirm!</button>
-  </div>
-  <div id="inputDiv">
-    Input here: <input id="numTxt" type="text">
-		<br />
-		<button id="addBtn">Add (Enter)</button>
-		<button id="dlBtn">Download .csv file</button>
-		<div id="getcsvDiv"></div>
-    <br />
-    <div id="tip">
-    <b> What can I input? </b><br />
-    <span> We support these format below: </span>
-    <ul>
-      <li>A number (eg. 5)</li>
-      <li>Area (eg. 5-12)</li>
-      <li>A number below 0, meaning cut one down (eg. -2 means cut 2 down 1)</li>
-      <li><code>!</code>, means reverting last change</li>
-    </ul>
-    <br />
-    <span>Made by Outloudvi with ❤ | <a href="https://github.com/outloudvi/count.surge.sh">GitHub</a></span>
-    </div>
-  </div>
-  <div id="showDiv">
-  </div>
-</div>
-
-<!-- And here goes the JavaScript! -->
-<script>
 x = undefined;
 xlen = 0;
 fcus = false;
@@ -241,6 +177,7 @@ function keyCheck(event){
   }
 }
 
+
 e('tsrgBtn').addEventListener("click", testStorage);
 e('numconfBtn').addEventListener("click", cntConfirm);
 e('addBtn').addEventListener("click", addNum);
@@ -250,7 +187,4 @@ e('readBtn').addEventListener("click", readData);
 e('numTxt').addEventListener("focus", (function(){fcus = true;}) );
 e('numTxt').addEventListener("blur", (function(){fcus = false;}) );
 e('numTxt').addEventListener("keydown", (function(g){if(g.key=='Enter') e('addBtn').click();}) );
-</script>
-	
-</body>
-</html>
+
