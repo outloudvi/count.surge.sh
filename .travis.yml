@@ -10,4 +10,4 @@ script:
 deploy:
   provider: surge
   project: ./
-domain: count.surge.sh
+  domain: count.surge.sh
