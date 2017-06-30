@@ -1,60 +1,86 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html>
-<head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-  <title> COUNT.surge.sh 中文版 </title>
-</head>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title> COUNT.surge.sh 中文版 </title>
 
-<!-- CSS Style -->
 <style>
-
 #inputDiv {
   width: 75%;
   float: left;
   display: none
 }
-
 #showDiv {
   width: 25%;
   float: right;
   display: none
 }
-
 .yl {
   background: yellow;
 }
 
+#shareJSONDiv, #chooseSrcDiv, #chooseIdDiv {
+  display: none;
+}
+
+#getcsvA {
+  color: #dddddd !important;
+}
 </style>
+
+</head>
+
+<!-- CSS Style -->
+
 
 <!-- Document -->
 <body>
-
 <div id="upbtn">
-  <button id="tsrgBtn">测试存储</button> | <button id="saveBtn" disabled>保存到浏览器</button> | <button id="readBtn" disabled>从浏览器读取</button> | <a href="index.html">English</a>
+  <span id="tsrgBtnArea"><button id="tsrgBtn">Test Stroage</button> | </span><button id="saveBtn" disabled>保存</button> | <button id="readBtn" disabled>读取</button> | <button id="shareBtn" disabled>以 JSON 格式分享</button> | <a href="index.html">English</a>
 </div>
-<br />
+<br>
 <div id="write">
   <div id="cntDiv">
-    我想从 1 数到... <input id="cntTxt" type="text"> <button id="numconfBtn">确认!</button>
+    想数 <input id="cntTxt" type="text"> 个值 .... <button id="numconfBtn">确认！</button>
+    <br />
+    或者 输入已有数据
+    <div id="inputJSONDiv">
+      <textarea id="inJSONTa"></textarea>
+      <br />
+      <span style="font-size: 40%"> 你输入的数据应该是由 COUNT.surge.sh 生成的有效 JSON 内容。 </span>
+      <br />
+      <button id="submitJSONBtn">确认！</button>
+    </div>
+  </div>
+  <div id="shareJSONDiv">
+      <textarea id="outJSONTa"></textarea>
+      <br />
+      <span style="font-size: 40%"> 它是 JSON 格式的。如果你想在 COUNT.surge.sh 上再次使用此数据，请保持它的原样。</span>
+      <br />
+      <button id="gotitJSONBtn">了解！</button>
+      <hr />
+  </div>
+  <div id="chooseIdDiv">
   </div>
   <div id="inputDiv">
-    在这里输入： <input id="numTxt" type="text">
-		<br />
-		<button id="addBtn">输入 (Enter)</button>
+    在此输入：<input id="numTxt" type="text">
+		<br>
+		<button id="addBtn">+ (Enter)</button>
 		<button id="dlBtn">下载 .csv 文件</button>
 		<div id="getcsvDiv"></div>
-    <br />
+    <br>
     <div id="tip">
-    <b> 我都能输入什么？ </b><br />
-    <span> 我们支持以下的这些格式： </span>
+    <b> 我能输入什么？ </b><br>
+    <span> 我们支持如下格式： </span>
     <ul>
-      <li>一个数 (例如 5)</li>
-      <li>数区间 (例如 5-12)</li>
-      <li>0以下的数代表将相关值减一 (例如 -2 代表把第2项的值减 1)</li>
-      <li><code>!</code> 代表撤销上次更改</li>
+      <li>数字 (例如 5)</li>
+      <li>数的区间 (例如 5-12)</li>
+      <li>负数代表相应项的值减一 (例如 -2 代表把 #2 的值减去一)</li>
+      <li><code>!</code> 代表回滚上次更改</li>
     </ul>
-    <br />
-    <span>由 Outloudvi ❤ 制作 | <a href="https://github.com/outloudvi/count.surge.sh">GitHub</a></span>
+    <span> 按下 Ctrl-S ，可以把此 “应用” 存储在你的电脑上离线使用 :) </span>
+    <br>
+    <span> 来自有爱的 Outloudvi | <a href="https://github.com/outloudvi/count.surge.sh">GitHub</a> | ver 1.2</span>
     </div>
   </div>
   <div id="showDiv">
@@ -70,39 +96,6 @@ xc = Array();
 
 function e(eid) {
   return document.getElementById(eid);
-}
-
-function testStorage(){
-  if ( window.localStorage === false )
-    e('tsrgBtn').innerHTML = "LocalStorage is not supported :(" ;
-  else {
-    e('tsrgBtn').innerHTML = "LocalStorage is supported. Yay!" ;
-    e('tsrgBtn').disabled = true;
-    e('saveBtn').disabled = false;
-    e('readBtn').disabled = false;
-  }
-}
-
-function saveData(){
-  window.localStorage.setItem( "count", JSON.stringify(x) );
-  e('saveBtn').innerHTML = "Saved";
-}
-
-function readData(){
-  readed = window.localStorage.getItem( "count" );
-  readed = JSON.parse(readed);
-  x = readed;
-  refreshLR();
-  e('readBtn').innerHTML = "Readed";
-}
-
-function initList(num){
-	xlen = num;
-	num = Number(num);
-	x = new Array(num+1);
-	for ( i=0;i<=xlen+1;i++ ){
-		x[i] = 0;
-	}
 }
 
 function refreshLR(){
@@ -123,6 +116,128 @@ function refreshLR(){
 	e('showDiv').innerHTML = y;
 	e('numTxt').value = "";
 	e('numTxt').focus();
+}
+
+function testStorage(){
+  if ( window.localStorage === false )
+    e('tsrgBtn').innerHTML = "LocalStorage 不支持 :(" ;
+  else {
+    e('tsrgBtn').innerHTML = "LocalStorage 被支持！" ;
+    e('tsrgBtnArea').style.display = "none";
+    e('readBtn').disabled = false;
+  }
+}
+
+function saveTo(num){
+  num = Number(num);
+  if ( num > 0 ) {
+    console.log( "保存到存档 #" + String(num) );
+    window.localStorage.setItem( "count-" + String(num) , JSON.stringify(x) );
+    console.log( JSON.stringify(x) );
+    e('saveBtn').innerHTML = "已保存";
+  } else {
+    e('saveBtn').innerHTML = "已取消";
+    e('numTxt').addEventListener("focus",  (function(){e('saveBtn').innerHTML = "保存";} ) , { "once": true } );
+  }
+  
+  for( let i=1; i<=5; i++ )
+  {
+    istr = String(i);
+    e('choose' + istr + 'Btn').removeEventListener('click',false);
+  }
+  e('cancelBtn').removeEventListener('click',false);
+  e('chooseIdDiv').innerHTML = "";
+  e('chooseIdDiv').style.display = "none";
+}
+
+function saveData(){
+  let x = "";
+  for( let i=1; i<=5; i++ )
+  {
+    istr = String(i);
+    if( window.localStorage.getItem('count-' + istr ) === null )
+      x = x + "<button id='choose" + istr + "Btn'>存档 #" + istr + " (并没有内容)" +"</button>";
+    else {
+      let xlen = JSON.parse(window.localStorage.getItem('count-' + istr)).length;
+      x = x + "<button id='choose" + istr + "Btn'>存档 #" + istr + "  有长度为" + String(xlen) +"的数据</button>";
+    }
+
+    x = x + " | ";
+  }
+  x = x + "<button id='cancelBtn'>取消</button>";
+  e('chooseIdDiv').innerHTML = x;
+  e('cancelBtn').addEventListener('click', (function(){ saveTo(0); }) );
+  console.log(x);
+  e('chooseIdDiv').style.display = "block";
+  for( let i=1; i<=5; i++ )
+  {
+    let istr = String(i);
+    e('choose' + istr + 'Btn').addEventListener('click', (function(){ saveTo(istr) }) );
+  }
+  e('saveBtn').innerHTML = "保存到...";
+}
+
+function readFrom(num){
+  if ( num > 0 ) {
+    x = JSON.parse(window.localStorage.getItem( "count-" + String(num) ) );
+    e('readBtn').innerHTML = "已加载";
+    xlen = x.length - 1;
+    if ( e('cntDiv').style.display = "block" )
+    {
+      e('cntDiv').style.display = "none";
+	    e('inputDiv').style.display = "block";
+	    e('showDiv').style.display = "block";
+    }
+    refreshLR();
+  } else {
+    e('readBtn').innerHTML = "已取消";
+    e('numTxt').addEventListener("focus",  (function(){e('readBtn').innerHTML = "加载";} ) , { "once": true } );
+  }
+
+  for( let i=1; i<=5; i++ )
+  {
+    istr = String(i);
+    e('choose' + istr + 'Btn').removeEventListener('click',false);
+  }
+  e('cancelBtn').removeEventListener('click',true);
+  e('chooseIdDiv').innerHTML = "";
+  e('chooseIdDiv').style.display = "none";
+
+}
+
+function readData(){
+  let x = "";
+  for( let i=1; i<=5; i++ )
+  {
+    istr = String(i);
+    if( window.localStorage.getItem('count-' + istr ) === null )
+      x = x + "<button id='choose" + istr + "Btn'>存档 #" + istr + " (并没有内容)" +"</button>";
+    else {
+      let xlen = JSON.parse(window.localStorage.getItem('count-' + istr)).length - 1;
+      x = x + "<button id='choose" + istr + "Btn'>存档 #" + istr + "  有长度为" + String(xlen) +"的数据</button>";
+    }
+
+    x = x + " | ";
+  }
+  x = x + "<button id='cancelBtn'>取消</button>";
+  e('chooseIdDiv').innerHTML = x;
+  e('cancelBtn').addEventListener('click', (function(){ readFrom(0); }) );
+  e('chooseIdDiv').style.display = "block";
+  for( let i=1; i<=5; i++ )
+  {
+    let istr = String(i);
+    e('choose' + istr + 'Btn').addEventListener('click', (function(){ readFrom(istr) }) );
+  }
+  e('readBtn').innerHTML = "从...读取";
+}
+
+function initList(num){
+	xlen = num;
+	num = Number(num);
+	x = new Array(num+1);
+	for ( i=0;i<=xlen+1;i++ ){
+		x[i] = 0;
+	}
 }
 
 function min(a,b){
@@ -152,9 +267,12 @@ function rollback(){
 
 function proc(str){
 	
+  e('numTxt').placeholder = "";
+
   if ( /^[0-9]+$/.test(str) ){ // Only a num
     str = Number(str);
     inc(str);
+    x = x.slice(0,xlen+1);
     return;
   }
 	
@@ -166,6 +284,7 @@ function proc(str){
     xto = max( str[0], str[1] );
     for (i=xfrom;i<=xto;i++)
       inc(i);
+    x = x.slice(0,xlen+1);
     return;
   }
 	
@@ -174,9 +293,12 @@ function proc(str){
     str = Number(str);
     if( str<=0 ) return;
       inc(str,false);
+    x = x.slice(0,xlen+1);
     return;
   }
 	
+  e('numTxt').placeholder = "指令识别失败。";
+
 }
 
 function addNum(){
@@ -208,9 +330,20 @@ function getBlob(){
 		}
 	blob = new Blob( [y] , { type: 'text/comma-separated-values', endings:'transparent' } );
 	url =  URL.createObjectURL(blob);
-	e('getcsvDiv').innerHTML = "<a id=getcsvA download='count.csv' href=' " + url + " '>Click here to download CSV</a>";
+	e('getcsvDiv').innerHTML = "<a id=getcsvA download='count.csv' href=' " + url + " '>点此下载 CSV</a>";
   e('getcsvA').click();
-  e('getcsvDiv').innerHTML = "";
+}
+
+function gotJSONData(){
+  let p = e('inJSONTa').value;
+  x = JSON.parse(p);
+  e('cntDiv').style.display = "none";
+	e('inputDiv').style.display = "block";
+	e('showDiv').style.display = "block";
+  xlen = x.length - 1;
+  refreshLR();
+  document.addEventListener("keydown", keyCheck );
+
 }
 
 function cntConfirm(){
@@ -220,6 +353,13 @@ function cntConfirm(){
 	e('showDiv').style.display = "block";
   refreshLR();
   document.addEventListener("keydown", keyCheck );
+}
+
+function shareByJSON(){
+  let r = JSON.stringify(x);
+  e('outJSONTa').value = r;
+  e('shareJSONDiv').style.display = "block";
+  e('gotitJSONBtn').addEventListener("click", ( function(){ e('shareJSONDiv').style.display = "none"; } ) );
 }
 
 function keyCheck(event){
@@ -251,7 +391,14 @@ e('readBtn').addEventListener("click", readData);
 e('numTxt').addEventListener("focus", (function(){fcus = true;}) );
 e('numTxt').addEventListener("blur", (function(){fcus = false;}) );
 e('numTxt').addEventListener("keydown", (function(g){if(g.key=='Enter') e('addBtn').click();}) );
+e('submitJSONBtn').addEventListener("click", gotJSONData);
+e('shareBtn').addEventListener("click", shareByJSON);
+e('numTxt').addEventListener("focus",  (function(){e('saveBtn').disabled=false; e('shareBtn').disabled=false;} ) , { "once": true } );
+
+testStorage();
+
 </script>
 	
-</body>
-</html>
+
+
+</body></html>
