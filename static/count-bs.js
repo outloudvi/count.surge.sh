@@ -3,10 +3,6 @@ var xlen = 0;
 fcus = false;
 xc = Array();
 
-function e(eid) {
-  return document.getElementById(eid);
-}
-
 function initList(num){
 	xlen = num;
 	num = Number(num);
@@ -17,6 +13,9 @@ function initList(num){
 }
 
 function startX(){
+  $('#bsBeforeR').css("display","none");
+  $('#inputDiv').css("display","block");
+  $('#showDiv').css("display","block");
   document.addEventListener("keydown", keyCheck );
   $("#bsSaveBtn").removeClass("disabled");
 }
@@ -36,9 +35,9 @@ function refreshLR(){
         y = y + "# " + i + " : " + x[i];
 		    y = y + "<br />";
 		}
-	e('bsShowDiv').innerHTML = y;
-	e('numTxt').value = "";
-	e('numTxt').focus();
+	$('#bsShowDiv').html(y);
+	$('#numTxt').val("");
+	$('#numTxt').focus();
 }
 
 function min(a,b){
@@ -68,7 +67,7 @@ function rollback(){
 
 function proc(str){
 	
-  e('numTxt').placeholder = "";
+  $('#numTxt').attr("placeholder","");
 
   if ( /^[0-9]+$/.test(str) ){ // Only a num
     str = Number(str);
@@ -98,12 +97,12 @@ function proc(str){
     return;
   }
 	
-  e('numTxt').placeholder = "Failed to recognize.";
+  $('#numTxt').attr("placeholder","Failed to recognize.");
 
 }
 
 function addNum(){
-	num =  e('numTxt').value;
+	num = $('#numTxt').val();
   num = num.replace(" ","");
 	
   if ( /!/.test(num) ) {
@@ -125,13 +124,10 @@ function addNum(){
 }
 
 function cntConfirm(){
-	e('bsBeforeR').style.display = "none";
-  let xv = Number(e('cntTxt').value);
+  let xv = Number($('#cntTxt').val());
   if( xv>=1000 )
-    console.log("Too much data... (" + String(xv) + ")")
+    console.log("Too much data... (" + String(xv) + ")");
 	initList( xv );
-	e('inputDiv').style.display = "block";
-	e('showDiv').style.display = "block";
   refreshLR();
   startX();
 }
@@ -152,7 +148,7 @@ function getBlob(){
 }
 
 function gotJSONData(){
-  let p = e('inJSONTa').value;
+  let p = $('#inJSONTa').val();
   try {
     x = JSON.parse(p);
   } catch (e) {
@@ -161,9 +157,6 @@ function gotJSONData(){
     $("#bsReadJSONH").html("Bad JSON data. Retry:");
     return;
   }
-  e('bsBeforeR').style.display = "none";
-	e('inputDiv').style.display = "block";
-	e('showDiv').style.display = "block";
   xlen = x.length - 1;
   refreshLR();
   startX();
@@ -201,8 +194,6 @@ function bsSaveTo(num){
     console.log( "Saving to #" + String(num) );
     window.localStorage.setItem( "count-" + String(num) , JSON.stringify(x) );
     console.log( JSON.stringify(x) );
-//    $('#bsSaveBtn').html("Saved");
-//    $('#numTxt').focus( function(){ $('#bsSaveBtn').html("Save");} );
   }
 }
 
@@ -224,37 +215,37 @@ function keyCheck(event){
   key = event.key;
   console.log(key);
   if ( key == 'Enter' ) {
-    e('addBtn').click();
+    $('#addBtn').click();
     return;
   }
-  p = e('numTxt').value;
+  p = $('#numTxt').val();
   if ( key == "Backspace" ) {
-    e('numTxt').value = p.slice(0,p.length-1);
+    $('#numTxt').val( p.slice(0,p.length-1) );
     return;
   }
   if( /^[0-9\-!]+$/.test(key) )
   {
-    e('numTxt').value = e('numTxt').value + key;
+    $('#numTxt').val( $('#numTxt').val() + key );
     return;
   }
 }
 
 function shareByJSON(){
   let r = JSON.stringify(x);
-  e('mdJSONTxt').innerHTML = r;
+  $('#mdJSONTxt').html(r);
 }
 
 $('#bsSaveBtn').click(bsSaveData);
 $('#bsLoadBtn').click(bsLoadData);
-e('submitJSONBtn').addEventListener("click", gotJSONData);
-e('numconfBtn').addEventListener("click", cntConfirm);
+$('#submitJSONBtn').click(gotJSONData);
+$('#numconfBtn').click(cntConfirm);
 for( let i=1;i<=5;i++ ){
   $('#bsSaveA' + i).click( function(){ bsSaveTo(i)} );
   $('#bsLoadA' + i).click( function(){ bsLoadFrom(i)} );
 }
-e('dlBtn').addEventListener("click", getBlob);
-e('addBtn').addEventListener("click", addNum);
-e('numTxt').addEventListener("focus", (function(){fcus = true;}) );
-e('numTxt').addEventListener("blur", (function(){fcus = false;}) );
-e('numTxt').addEventListener("keydown", (function(g){if(g.key=='Enter') e('addBtn').click();}) );
-e('bsShareJSONBtn').addEventListener("click", shareByJSON );
+$('#dlBtn').click(getBlob);
+$('#addBtn').click(addNum);
+$('#numTxt').focus( (function(){fcus = true;}) );
+$('#numTxt').blur( (function(){fcus = false;}) );
+$('#numTxt').keydown( (function(g){if(g.key=='Enter') $('#addBtn').click();}) );
+$('#bsShareJSONBtn').click(shareByJSON);
