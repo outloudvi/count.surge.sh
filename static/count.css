@@ -1,0 +1,22 @@
+#inputDiv {
+  float: left;
+  display: none;
+}
+#showDiv {
+  float: right;
+  display: none;
+}
+#csvBlobBtn {
+  display: none;
+}
+.yl {
+  background: yellow;
+}
+
+#shareJSONDiv, #chooseSrcDiv, #chooseIdDiv {
+  display: none;
+}
+
+#getcsvA {
+  color: #dddddd !important;
+}
