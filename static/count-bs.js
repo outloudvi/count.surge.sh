@@ -12,6 +12,26 @@ function initList(num){
 	}
 }
 
+function keyCheck(event){
+  if( fcus ) return;
+  key = event.key;
+  console.log(key);
+  if ( key == 'Enter' ) {
+    $('#addBtn').click();
+    return;
+  }
+  p = $('#numTxt').val();
+  if ( key == "Backspace" ) {
+    $('#numTxt').val( p.slice(0,p.length-1) );
+    return;
+  }
+  if( /^[0-9\-!]+$/.test(key) )
+  {
+    $('#numTxt').val( $('#numTxt').val() + key );
+    return;
+  }
+}
+
 function startX(){
   $('#bsBeforeR').css("display","none");
   $('#inputDiv').css("display","block");
@@ -171,7 +191,8 @@ function bsLoadFrom(num){
     $('#cntDiv').css("display","none");
     refreshLR();
     $('#bsBeforeR').css("display","none");
-    document.addEventListener("keydown", keyCheck );
+    document.addEventListener("keydown", 
+			     );
   }
 }
 
@@ -208,26 +229,6 @@ function bsSaveData(){
       $('#bsSaveA' + istr).html("#" + istr + ", length: " + String(xlen));
     }
   } 
-}
-
-function keyCheck(event){
-  if( fcus ) return;
-  key = event.key;
-  console.log(key);
-  if ( key == 'Enter' ) {
-    $('#addBtn').click();
-    return;
-  }
-  p = $('#numTxt').val();
-  if ( key == "Backspace" ) {
-    $('#numTxt').val( p.slice(0,p.length-1) );
-    return;
-  }
-  if( /^[0-9\-!]+$/.test(key) )
-  {
-    $('#numTxt').val( $('#numTxt').val() + key );
-    return;
-  }
 }
 
 function shareByJSON(){
