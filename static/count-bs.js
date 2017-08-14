@@ -1,13 +1,13 @@
-var x = undefined;
+var x;
 var xlen = 0;
-fcus = false;
-xc = Array();
+var fcus = false;
+var xc = Array();
 
 function initList(num){
 	xlen = num;
 	num = Number(num);
 	x = new Array(num+1);
-	for ( i=0;i<=xlen+1;i++ ){
+	for (let i=0;i<=xlen+1;i++ ){
 		x[i] = 0;
 	}
 }
@@ -23,7 +23,7 @@ function startX(){
 function refreshLR(){
 	y = ""
   if( xc.length != 0 )
-		for (i=1;i<=xlen;i++) {
+		for (let i=1;i<=xlen;i++) {
       if ( xc.includes(i) == true )
 			  y = y + "<span class=yl># " + i + " : " + x[i] + "</span>";
       else
@@ -31,7 +31,7 @@ function refreshLR(){
 		  y = y + "<br />";
 		}
   else
-    for (i=1;i<=xlen;i++) {
+    for (let i=1;i<=xlen;i++) {
         y = y + "# " + i + " : " + x[i];
 		    y = y + "<br />";
 		}
@@ -82,7 +82,7 @@ function proc(str){
     str[1] = Number(str[1]);
     xfrom = min( str[0], str[1] );
     xto = max( str[0], str[1] );
-    for (i=xfrom;i<=xto;i++)
+    for (let i=xfrom;i<=xto;i++)
       inc(i);
     x = x.slice(0,xlen+1);
     return;
@@ -134,7 +134,7 @@ function cntConfirm(){
 
 function getBlob(){
 	y = ""
-		for (i=1;i<=xlen;i++) {
+		for (let i=1;i<=xlen;i++) {
 			y = y + i + "," + x[i];
 		  y = y + "\n";
 		}
