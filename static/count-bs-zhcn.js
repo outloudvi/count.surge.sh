@@ -207,6 +207,7 @@ function bsLoadData(){
       $('#bsLoadA' + istr).html("#" + istr + ", 长度为 " + String(xlen));
     }
   }
+  startX();
 }
 
 function bsSaveTo(num){

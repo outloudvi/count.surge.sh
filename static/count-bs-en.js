@@ -207,6 +207,7 @@ function bsLoadData(){
       $('#bsLoadA' + istr).html("#" + istr + ", length: " + String(xlen));
     }
   }
+  startX();
 }
 
 function bsSaveTo(num){
