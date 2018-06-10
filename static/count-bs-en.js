@@ -139,6 +139,7 @@ function addNum(){
   for ( i in num )
     proc( num[i] );
 	
+  x = x.slice(0,xlen+1);
 	refreshLR();
 
 }
