@@ -1,6 +1,6 @@
 # [count.surge.sh](https://count.surge.sh)
 
-[![Build Status](https://travis-ci.org/outloudvi/count.surge.sh.svg?branch=master)](https://travis-ci.org/outloudvi/count.surge.sh)
+[![Build Status](https://travis-ci.org/outloudvi/count.surge.sh.svg?branch=master)](https://travis-ci.org/outloudvi/count.surge.sh) [![codebeat badge](https://codebeat.co/badges/daff4929-6492-4b82-bf73-7bd483774733)](https://codebeat.co/projects/github-com-outloudvi-count-surge-sh-master)
 
 > U wanna count, so it does.
 
