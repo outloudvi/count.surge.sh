@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>count.surge.sh/ts</title>
+    <link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/twitter-bootstrap/4.2.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="src/styles/index.css">
+</head>
+
+<body>
+    <!-- Menu -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand">count.surge.sh</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+            aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="divMenuLoad" role="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        Load
+                    </a>
+                    <div id="loadMenu" class="dropdown-menu" aria-labelledby="divMenuLoad">
+                        <a class="dropdown-item" href="#">#1</a>
+                        <a class="dropdown-item" href="#">#2</a>
+                        <a class="dropdown-item" href="#">#3</a>
+                        <a class="dropdown-item" href="#">#4</a>
+                        <a class="dropdown-item" href="#">#5</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="divMenuSave" role="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        Save
+                    </a>
+                    <div id="saveMenu" class="dropdown-menu" aria-labelledby="divMenuSave">
+                        <a class="dropdown-item" href="#">#1</a>
+                        <a class="dropdown-item" href="#">#2</a>
+                        <a class="dropdown-item" href="#">#3</a>
+                        <a class="dropdown-item" href="#">#4</a>
+                        <a class="dropdown-item" href="#">#5</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <button id="btnExportJSON" type="button" class="btn btn-primary" data-toggle="modal" data-target="#jsonModal">
+                        Export to JSON
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div id="divInitialize" class="row">
+            <div class="col-12 col-lg-8 offset-lg-2">
+                <!-- Initialize -->
+                <h2> Before starting your work... </h2>
+                <div class="alert alert-primary" role="alert">
+                    Tip: You can also load from your past saves!
+                </div>
+
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Count from 1 to </span>
+                    </div>
+                    <input id="preInputLength" type="text" aria-label="First name" class="form-control">
+                </div>
+
+                <div class="prerunDiv">
+                    <div id="orpaste">Or paste JSON here:</div>
+                    <textarea name="" id="preInputText" class="form-control" cols="30" rows="2"></textarea>
+                </div>
+
+                <div class="prerunDiv">
+                    <button id="prerunStartBtn" type="button" class="btn btn-primary">Let's start!</button>
+                    <span id="prerunStatus"></span>
+                </div>
+            </div>
+        </div>
+        <div id="divWriting" class="row">
+            <div class="col-12 col-lg-8">
+                <!-- Count -->
+                <label for="basic-url">Input number:</label>
+                <input id="numTxt" type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3">
+                <br />
+                <div class="btn-toolbar" role="toolbar" aria-label="...">
+                    <div class="btn-group" role="group" aria-label="...">
+                        <button id="addBtn" type="button" class="btn btn-primary">Add (Enter)</button>
+                    </div>
+                    <div class="btn-group" role="group" aria-label="...">
+                        <button id="undoBtn" type="button" class="btn btn-secondary">Undo</button>
+                    </div>
+                    <div class="btn-group" role="group" aria-label="...">
+                        <button id="dlBtn" type="button" class="btn btn-secondary">Generate .csv file</button>
+                        <button id="csvBlobBtn" type="button" class="btn btn-success"><a id="csvBlobA" download='count.csv'>Click
+                                here to download .csv</a></button>
+                    </div>
+                </div>
+                <br />
+                <div id="tip">
+                    <b> What can I input? </b><br>
+                    <span> We support these format below: </span>
+                    <ul>
+                        <li>A number (eg. 5)</li>
+                        <li>Area (eg. 5-12)</li>
+                        <li>A number below 0, meaning minus one on the value (eg. -2 means cut #2 down 1)</li>
+                    </ul>
+                    <span>Actually, you can input at the focus of the whole left side. No need to click the inputbox
+                        every time. Just input and press "Enter".</span>
+                </div>
+            </div>
+            <div class="col-12 col-lg-4">
+                <!-- Show results -->
+                <div id="result">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div id="footer" class="col-12 col-lg-6 offset-lg-3">
+                Made by <a href="https://github.com/outloudvi">Outvi V</a> | <a href="https://github.com/outloudvi/count.surge.sh/tree/rewrite">Source
+                    Code</a> | <a href="https://github.com/outloudvi/count.surge.sh/tree/master">Old version</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="jsonModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ModalLabel">Export to JSON</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Here goes your content:
+                    <textarea id="txModelText" class="form-control" cols="30" rows="3"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Libraries -->
+    <script src="https://cdnjs.loli.net/ajax/libs/jquery/3.3.1/jquery.slim.min.js"></script>
+    <script src="https://cdnjs.loli.net/ajax/libs/popper.js/1.9.9/umd/popper.min.js"></script>
+    <script src="https://cdnjs.loli.net/ajax/libs/twitter-bootstrap/4.2.1/js/bootstrap.min.js"></script>
+    <script src="dist/main.js"></script>
+</body>
+
+</html>
