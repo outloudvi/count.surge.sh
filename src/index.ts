@@ -77,7 +77,7 @@ function refreshLS(): void {
   refreshStorageData();
 
   $('#loadMenu').children().each(function (index: number, elem: HTMLElement) {
-    if (typeof storageData[index] == typeof [] && storageData[index].length > 0) {
+    if (Array.isArray(storageData[index]) && storageData[index].length > 0) {
       $(this).text(`Save #${index + 1} (length: ${storageData[index].length - 1})`)
         .click(() => createInterface_Import(storageData[index]))
         .css('color','black');
@@ -88,8 +88,8 @@ function refreshLS(): void {
   });
 
   $('#saveMenu').children().each(function (index: number, elem: HTMLElement) {
-    if (typeof storageData[index] == typeof [] && storageData[index].length > 0) {
-      $(this).text(`Save #${index + 1} (length: ${storageData[index].length - 1})`)
+    if (Array.isArray(storageData[index]) && storageData[index].length > 0) {
+      $(this).text(`Save #${index + 1} (length: ${storageData[index].length - 1})`);
     } else {
       $(this).text(`Save #${index + 1} (empty)`)
     }
