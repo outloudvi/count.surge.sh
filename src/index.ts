@@ -256,7 +256,7 @@ document.addEventListener('keydown', (e) => {
     return;
   }
 
-  if ($('#numTxt').is(':focus') === true) {return;}
+  if ($('#numTxt').is(':focus') === true) { return; }
 
   let $numTxt = $('#numTxt');
 
