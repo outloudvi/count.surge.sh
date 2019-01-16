@@ -96,6 +96,9 @@ function refreshLS(): void {
     $(this).off('click')
            .click(() => {
       storageData[index] = store.getState().data;
+        if (Array.isArray(storageData[index]) === false) {
+            storageData[index] = [];
+        }
       window.localStorage.setItem('count__', JSON.stringify(storageData));
       refreshLS();
     });
