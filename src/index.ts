@@ -219,9 +219,11 @@ document.addEventListener('keydown', (e) => {
     return;
   }
   let $numTxt = $('#numTxt');
-  if ((e.keyCode >=48 && e.keyCode <= 57) || e.key === '-' || e.key === ',' ) {
+  if ($('#numTxt').is(':focus')) {
+    if ((e.keyCode >= 48 && e.keyCode <= 57) || e.key === '-' || e.key === ',') {
     $numTxt.val($numTxt.val() + e.key);
     return;
+  }
   }
   if (e.key === 'Backspace') {
     let text = <string>$numTxt.val();
