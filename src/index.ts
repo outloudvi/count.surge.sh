@@ -216,6 +216,21 @@ $('#undoBtn').click( () => {
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Enter') {
     $('#addBtn').click();
+    return;
+  }
+  let $numTxt = $('#numTxt');
+  if ((e.keyCode >=48 && e.keyCode <= 57) || e.key === '-' || e.key === ',' ) {
+    $numTxt.val($numTxt.val() + e.key);
+    return;
+  }
+  if (e.key === 'Backspace') {
+    let text = <string>$numTxt.val();
+    $numTxt.val(text.slice(0,text.length-1));
+    return;
+  }
+  if (e.key === 'U' || e.key === 'u') {
+    $('#undoBtn').click();
+    return;
   }
 });
 
