@@ -214,6 +214,15 @@ $('#undoBtn').click( () => {
 })
 
 document.addEventListener('keydown', (e) => {
+  if (targetLength === 0) {
+    if (e.key === 'Enter') {
+      $('#prerunStartBtn').click();
+    } else {
+      console.log('not right it')
+      return;
+    }
+  }
+
   if (e.key === 'Enter') {
     $('#addBtn').click();
     return;
