@@ -118,7 +118,7 @@ function refreshLS(): void {
 
 $('#prerunStartBtn').click(function () {
   let iVal = Number($('#preInputLength').val());
-  let iText = $('#preInputText').val();
+  let iText = String($('#preInputText').val());
   let iArray = [];
   if (iVal) {
     if (iVal > 70) {
@@ -137,7 +137,7 @@ $('#prerunStartBtn').click(function () {
     return;
   }
   try {
-    iArray = JSON.parse(<string>iText);
+    iArray = JSON.parse(iText);
   } catch (err) {
     $preStatus.text('Failed to extract data from JSON.');
     $('#prerunStartBtn').removeClass('btn-primary').addClass('btn-warning');
