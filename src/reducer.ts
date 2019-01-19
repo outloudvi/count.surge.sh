@@ -1,5 +1,3 @@
-import { Reducer } from 'redux';
-
 // INTERFACES //
 interface revision {
   data: number[];
